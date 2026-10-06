@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gap_maximizing_on_ladders"
+version = "0.1.0"
+description = "Gap-optimal edge conductances on ladder graphs via SDP"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy", "scipy", "cvxpy", "matplotlib"]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+include = ["gap_maximizing_on_ladders*"]
