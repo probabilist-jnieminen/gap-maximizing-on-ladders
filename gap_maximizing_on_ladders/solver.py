@@ -81,4 +81,5 @@ def solve_gap_sdp(B: np.ndarray, solver: str = cp.CLARABEL, **solve_kwargs) -> G
 
 def solve_ladder(n: int, solver: str = cp.CLARABEL, **solve_kwargs) -> GapSolution:
     """solve_gap_sdp for the ladder with n rungs; w follows make_ladder(n).edges."""
+    
     return solve_gap_sdp(make_ladder(n).B, solver=solver, **solve_kwargs)
