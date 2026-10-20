@@ -15,6 +15,7 @@ LABEL_SIZE = 9
 
 def _trim(s: str) -> str:
     """'2.5000' -> '2.5', '3.0000' -> '3'."""
+
     return s.rstrip("0").rstrip(".") if "." in s else s
 
 
@@ -27,11 +28,13 @@ def conductance_labels(w, zero_tol: float = 1e-5, decimals: int = 4):
     and text labels rounded to `decimals` places without trailing zeros,
     e.g. "1", "2.5", "3.1416".
     """
+
     w = np.asarray(w, dtype=float)
     on = w > zero_tol * w.max()
     unit = float(w[on].min())
     ratios = np.where(on, w / unit, 0.0)
     labels = [_trim(f"{r:.{decimals}f}") for r in ratios]
+
     return unit, ratios, labels
 
 
@@ -42,6 +45,7 @@ def draw_ladder(lad, w, ax=None, zero_tol: float = 1e-5, decimals: int = 4):
     are dashed. The top rail is drawn on top, rungs are vertical.
     Returns (ax, u).
     """
+
     if ax is None:
         _, ax = plt.subplots(figsize=(max(5.0, lad.n + 0.5), 2.6))
 
@@ -78,4 +82,5 @@ def draw_ladder(lad, w, ax=None, zero_tol: float = 1e-5, decimals: int = 4):
     ax.set_ylim(-0.45, 1.45)
     ax.set_aspect("equal")
     ax.axis("off")
+    
     return ax, unit

@@ -44,6 +44,7 @@ def solve_gap_sdp(B: np.ndarray, solver: str = cp.CLARABEL, **solve_kwargs) -> G
     solver="SCS" for a cross-check. Extra keyword arguments go to cvxpy's
     Problem.solve, e.g. verbose=True.
     """
+    
     m, N = B.shape
     Q = null_space(np.ones((1, N)))   # N x (N-1), orthonormal columns
     C = B @ Q                         # so that Q^T L(w) Q = C^T diag(w) C
