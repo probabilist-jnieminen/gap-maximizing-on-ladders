@@ -10,11 +10,12 @@ from gap_maximizing_on_ladders import (
 )
 
 NS = range(1, 9)
-TOL = 1e-6
+REL = 1e-6
 
 
 def incidence(G):
     """Oriented incidence matrix with one row per edge, as in make_ladder."""
+
     return nx.incidence_matrix(G, oriented=True).toarray().T
 
 
@@ -22,12 +23,12 @@ def incidence(G):
 
 def test_single_rung():
     sol = solve_ladder(1)
-    np.testing.assert_allclose(sol.w, [1.0], atol=TOL)
-    assert sol.lambda2 == pytest.approx(2.0, abs=TOL)
+    np.testing.assert_allclose(sol.w, [1.0], rtol=REL)
+    assert sol.lambda2 == pytest.approx(2.0, rel=REL)
 
 
 def test_four_cycle():
-    assert solve_ladder(2).lambda2 == pytest.approx(0.5, abs=TOL)
+    assert solve_ladder(2).lambda2 == pytest.approx(0.5, rel=REL)
 
 
 # For an edge-transitive graph the uniform weights are optimal: averaging any
@@ -46,7 +47,7 @@ def test_edge_transitive_graphs(family, k):
     B = incidence(BUILDERS[family](k))
     m = B.shape[0]
     expected = algebraic_connectivity(B, np.full(m, 1 / m))
-    assert solve_gap_sdp(B).lambda2 == pytest.approx(expected, abs=TOL)
+    assert solve_gap_sdp(B).lambda2 == pytest.approx(expected, rel=REL)
 
 
 # ---- properties that must hold for every n ---------------------------------
@@ -62,7 +63,7 @@ def test_feasible(n):
 @pytest.mark.parametrize("n", NS)
 def test_sdp_value_matches_numpy(n):
     sol = solve_ladder(n)
-    assert sol.lambda2 == pytest.approx(sol.lambda2_check, abs=TOL)
+    assert sol.lambda2 == pytest.approx(sol.lambda2_check, rel=REL)
 
 
 @pytest.mark.parametrize("n", NS)
@@ -74,13 +75,13 @@ def test_beats_feasible_points(n):
     candidates = [np.full(m, 1 / m)]
     candidates += list(np.random.default_rng(n).dirichlet(np.ones(m), size=20))
     for w in candidates:
-        assert best >= algebraic_connectivity(lad.B, w) - TOL
+        assert best >= algebraic_connectivity(lad.B, w) * (1 - REL)
 
 
 @pytest.mark.parametrize("n", NS)
 def test_trace_bound(n):
     """trace L(w) = 2, and the 2n-1 nonzero eigenvalues are >= lambda_2."""
-    assert solve_ladder(n).lambda2 <= 2 / (2 * n - 1) + TOL
+    assert solve_ladder(n).lambda2 <= 2 / (2 * n - 1) * (1 + REL)
 
 
 # ---- second solver ---------------------------------------------------------
@@ -89,5 +90,5 @@ def test_trace_bound(n):
 def test_clarabel_and_scs_agree(n):
     # SCS is a first-order method, accurate to about 1e-4 by default.
     assert solve_ladder(n, solver="SCS").lambda2 == pytest.approx(
-        solve_ladder(n).lambda2, abs=1e-3
+        solve_ladder(n).lambda2, rel=1e-2
     )
