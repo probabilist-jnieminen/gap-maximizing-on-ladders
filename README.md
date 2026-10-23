@@ -50,15 +50,14 @@ What has been checked (see `tests/test_closed_form.py` and `scripts/closed_form_
   $u_n\{k(k+1)\}_{k=0}^{n-1} \cup u_n\{k(k+1)+2\}_{k=0}^{n-1}$ for $n = 1,\dots,100$.
   In particular $\lambda_2$ has multiplicity exactly 2 there.
 * **Agreement with the SDP solver.** For $n \le 30$ the solver's optimal value agrees with
-  $6/(n(n^2+2))$ to a relative error of at most $2\cdot10^{-7}$, and the rail conductances to at
-  most $2.1\cdot10^{-4}$. For $n = 50$ the value agrees to $4\cdot10^{-8}$.
+  $6/(n(n^2+2))$ to a relative error of at most $1.1\cdot10^{-7}$, and the rail conductances to at most $2.0\cdot10^{-4}$. For $n = 50$ the value agrees to $4\cdot10^{-8}$.
 
 What has not: there is **no proof** that the closed form is optimal, and no proof that
 the optimiser is unique.
 
 **A caveat on the rungs.** The optimum is very flat in the rung conductances: moving
 budget between rungs changes $\lambda_2$ only to second order. The solver therefore pins
-the rungs down much less accurately than the rails or the value (up to $1.6\cdot10^{-2}$
+the rungs down much less accurately than the rails or the value (up to $1.5\cdot10^{-2}$
 relative error for $n \le 30$, and about $5\%$ at the end rungs for $n = 50$), and
 tightening its tolerances does not help. Comparisons between solved and closed-form
 conductances should be read with this in mind.
@@ -117,7 +116,7 @@ print(abs(sol.w - closed_form_w(10)).max())
 | `scripts/` | command-line scripts (above) |
 | `tests/` | pytest suite |
 | `results/` | generated output |
-| `docs/` | draft LaTeX documentation of the mathematics and the design decisions |
+| `docs/` | incomplete draft LaTeX documentation of the mathematics and the design decisions |
 
 ## Status and next steps
 
@@ -132,6 +131,13 @@ print(abs(sol.w - closed_form_w(10)).max())
 * P. Caputo, T. M. Liggett, T. Richthammer, *Proof of Aldous' spectral gap conjecture*, J. Amer. Math. Soc. 23 (2010), 831–851.
 * L. Vandenberghe, S. Boyd, *Semidefinite programming*, SIAM Review 38 (1996), 49–95.
 * J. Sun, S. Boyd, L. Xiao, P. Diaconis, *The fastest mixing Markov process on a graph and a connection to a maximum variance unfolding problem*, SIAM Review 48 (2006), 681–699.
+
+## Reproducibility
+
+The committed results in `results/` were produced with Python 3.12.3, numpy 2.5.3,
+scipy 1.18.1, cvxpy 1.9.3 and Clarabel 0.11.1 (full list in `requirements-lock.txt`).
+Small differences in the solver output, especially in the rung conductances, are
+expected with other versions or on other machines.
 
 ## License
 
